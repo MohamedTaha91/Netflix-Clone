@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 
-export default function Example() {
+export default function Dropdown() {
   return (
     <Menu
       as="div"

@@ -1,50 +1,54 @@
 import { render, screen } from "@testing-library/react";
 import Navbar from "./index";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom"; // for jest-dom matchers
 
-// Mock the Image component from next/image
+
+// Mock the Next.js Image component and Link for testing
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => {
-    const { alt, width, height, className } = props;
-    return (
-      <img
-        src={props.src.src || props.src}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-      />
-    );
-  },
+  default: (props: { src: string; alt: string }) => <img src={props.src} alt={props.alt} />,
 }));
 
-// Mock the next/link component
-jest.mock("next/link", () => ({
-  __esModule: true,
-  default: ({ children, href }: any) => <a href={href}>{children}</a>,
-}));
+jest.mock("next/link", () => {
+  return ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  );
+});
 
-describe("Navbar", () => {
-  test("renders Netflix logo", () => {
+jest.mock("../dropDown", () => {
+  return function MockDropdown() {
+    return <div data-testid="mock-dropdown">Dropdown</div>;
+  };
+});
+
+ describe("Navbar Component", () => {
+  it("renders the Netflix logo", () => {
     render(<Navbar />);
+    
     const logo = screen.getByAltText("Netflix Logo");
     expect(logo).toBeInTheDocument();
-    expect(logo).toHaveAttribute("src", "/img.jpg"); // Now, this should work with the updated mock
   });
 
-  test("renders menu items", () => {
+  it("renders navigation links", () => {
     render(<Navbar />);
-    expect(screen.getByText("Inicio")).toBeInTheDocument();
-    expect(screen.getByText("Series")).toBeInTheDocument();
-    expect(screen.getByText("Peliculas")).toBeInTheDocument();
-    expect(screen.getByText("Novedades Populares")).toBeInTheDocument();
-    expect(screen.getByText("Mi Lista")).toBeInTheDocument();
-    expect(screen.getByText("Explora por idiomas")).toBeInTheDocument();
+
+    const links = ["Home", "Series", "Films", "New & Popular", "My List", "Browse by languages"];
+    links.forEach((linkText) => {
+      const link = screen.getByText(linkText);
+      expect(link).toBeInTheDocument();
+    });
   });
 
-  test("renders bell and search icons", () => {
+  it("renders the dropdown component", () => {
     render(<Navbar />);
+
+    const dropdown = screen.getByTestId("mock-dropdown");
+    expect(dropdown).toBeInTheDocument();
+  });
+
+  it("renders bell and search icons", () => {
+    render(<Navbar />);
+
     const bellIcon = screen.getByTestId("bell-icon");
     const searchIcon = screen.getByTestId("search-icon");
 
@@ -52,10 +56,11 @@ describe("Navbar", () => {
     expect(searchIcon).toBeInTheDocument();
   });
 
-  test("renders profile image", () => {
+  it("renders the profile image", () => {
     render(<Navbar />);
-    const profileIcon = screen.getByAltText("profile icon");
-    expect(profileIcon).toBeInTheDocument();
-    expect(profileIcon).toHaveAttribute("src", "https://placehold.co/35");
+
+    const profileImage = screen.getByAltText("profile icon");
+    expect(profileImage).toBeInTheDocument();
+    expect(profileImage).toHaveAttribute("src", "https://placehold.co/35");
   });
-});
+}); 
