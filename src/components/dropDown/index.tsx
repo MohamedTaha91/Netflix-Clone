@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 import { MENU_ITEMS } from "@/constants/menu";
+import Link from "next/link";
 
 export default function Dropdown() {
   return (
@@ -22,12 +23,11 @@ export default function Dropdown() {
         <div className="py-1">
           {MENU_ITEMS.map((item, index) => (
             <MenuItem key={index}>
-              <a
+              <Link
                 href={item.href}
                 className="block px-4 py-2 text-sm text-white data-[focus]:bg-gray-700 data-[focus]:text-white"
-              >
-                {item.name}
-              </a>
+              />
+              {item.name}
             </MenuItem>
           ))}
         </div>
