@@ -3,6 +3,7 @@ import netflixLogo from "../../../public/netflixLogo.png";
 import { Bell, Search } from "lucide-react";
 import Link from "next/link";
 import Dropdown from "../dropDown";
+import { MENU_ITEMS } from "@/constants/menu";
 
 const Navbar = () => {
   return (
@@ -15,12 +16,11 @@ const Navbar = () => {
         className="h-auto ml-8"
       />
       <menu className="hidden md:flex text-small w-full h-20 gap-x-10 mr-10 items-center text-white ml-5">
-        <Link href={"#"}>Home</Link>
-        <Link href={"#"}>Series</Link>
-        <Link href={"#"}>Films</Link>
-        <Link href={"#"}>New & Popular</Link>
-        <Link href={"#"}>My List</Link>
-        <Link href={"#"}>Browse by languages</Link>
+        {MENU_ITEMS.map((item, index) => (
+          <Link key={index} href={item.href}>
+            {item.name}
+          </Link>
+        ))}
       </menu>
       <Dropdown />
       <div className="flex flex-row-reverse w-full items-center gap-6 mr-4">
